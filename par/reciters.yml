@@ -1,0 +1,246 @@
+reciters:
+  - id: alafasy_128
+    name_en: "Mishary Alafasy (128kbps)"
+    name_ar: "مشاري العفاسي (128kbps)"
+    base_url: "https://everyayah.com/data/Alafasy_128kbps/"
+  - id: alafasy_64
+    name_en: "Mishary Alafasy (64kbps)"
+    name_ar: "مشاري العفاسي (64kbps)"
+    base_url: "https://everyayah.com/data/Alafasy_64kbps/"
+  - id: abdulbasit_mujawwad_128
+    name_en: "Abdul Basit (Mujawwad, 128kbps)"
+    name_ar: "عبد الباسط (مجود، 128kbps)"
+    base_url: "https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/"
+  - id: abdulbasit_murattal_192
+    name_en: "Abdul Basit (Murattal, 192kbps)"
+    name_ar: "عبد الباسط (مرتل، 192kbps)"
+    base_url: "https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/"
+  - id: abdulbasit_murattal_64
+    name_en: "Abdul Basit (Murattal, 64kbps)"
+    name_ar: "عبد الباسط (مرتل، 64kbps)"
+    base_url: "https://everyayah.com/data/Abdul_Basit_Murattal_64kbps/"
+  - id: abdul_samad_64
+    name_en: "AbdulSamad (64kbps)"
+    name_ar: "عبد الصمد (64kbps)"
+    base_url: "https://everyayah.com/data/AbdulSamad_64kbps_QuranExplorer.Com/"
+  - id: abdullaah_juhany_128
+    name_en: "Abdullaah Awad Al-Juhany (128kbps)"
+    name_ar: "عبد الله عواد الجهني (128kbps)"
+    base_url: "https://everyayah.com/data/Abdullaah_3awwaad_Al-Juhaynee_128kbps/"
+  - id: abdullah_basfar_192
+    name_en: "Abdullah Basfar (192kbps)"
+    name_ar: "عبد الله بصفر (192kbps)"
+    base_url: "https://everyayah.com/data/Abdullah_Basfar_192kbps/"
+  - id: abdullah_basfar_64
+    name_en: "Abdullah Basfar (64kbps)"
+    name_ar: "عبد الله بصفر (64kbps)"
+    base_url: "https://everyayah.com/data/Abdullah_Basfar_64kbps/"
+  - id: abdullah_matroud_128
+    name_en: "Abdullah Matroud (128kbps)"
+    name_ar: "عبد الله مطرود (128kbps)"
+    base_url: "https://everyayah.com/data/Abdullah_Matroud_128kbps/"
+  - id: sudais_192
+    name_en: "Abdurrahman As-Sudais (192kbps)"
+    name_ar: "عبد الرحمن السديس (192kbps)"
+    base_url: "https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps/"
+  - id: sudais_64
+    name_en: "Abdurrahman As-Sudais (64kbps)"
+    name_ar: "عبد الرحمن السديس (64kbps)"
+    base_url: "https://everyayah.com/data/Abdurrahmaan_As-Sudais_64kbps/"
+  - id: shaatree_128
+    name_en: "Abu Bakr Ash-Shaatree (128kbps)"
+    name_ar: "أبو بكر الشاطري (128kbps)"
+    base_url: "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps/"
+  - id: shaatree_64
+    name_en: "Abu Bakr Ash-Shaatree (64kbps)"
+    name_ar: "أبو بكر الشاطري (64kbps)"
+    base_url: "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_64kbps/"
+  - id: ajamy_128
+    name_en: "Ahmed Ibn Ali Al-Ajamy (128kbps)"
+    name_ar: "أحمد بن علي العجمي (128kbps)"
+    base_url: "https://everyayah.com/data/ahmed_ibn_ali_al_ajamy_128kbps/"
+  - id: ahmed_neana_128
+    name_en: "Ahmed Neana (128kbps)"
+    name_ar: "أحمد نعناع (128kbps)"
+    base_url: "https://everyayah.com/data/Ahmed_Neana_128kbps/"
+  - id: akram_alaqimy_128
+    name_en: "Akram Al Alaqimy (128kbps)"
+    name_ar: "أكرم العلقيمي (128kbps)"
+    base_url: "https://everyayah.com/data/Akram_AlAlaqimy_128kbps/"
+  - id: ali_jaber_64
+    name_en: "Ali Jaber (64kbps)"
+    name_ar: "علي جابر (64kbps)"
+    base_url: "https://everyayah.com/data/Ali_Jaber_64kbps/"
+  - id: ali_hajjaj_suesy_128
+    name_en: "Ali Hajjaj Al Suesy (128kbps)"
+    name_ar: "علي حجاج السويسي (128kbps)"
+    base_url: "https://everyayah.com/data/Ali_Hajjaj_AlSuesy_128kbps/"
+  - id: ayman_sowaid_64
+    name_en: "Ayman Sowaid (64kbps)"
+    name_ar: "أيمن سويد (64kbps)"
+    base_url: "https://everyayah.com/data/Ayman_Sowaid_64kbps/"
+  - id: aziz_alili_128
+    name_en: "Aziz Alili (128kbps)"
+    name_ar: "عزيز عليلي (128kbps)"
+    base_url: "https://everyayah.com/data/aziz_alili_128kbps/"
+  - id: fares_abbad_64
+    name_en: "Fares Abbad (64kbps)"
+    name_ar: "فارس عباد (64kbps)"
+    base_url: "https://everyayah.com/data/Fares_Abbad_64kbps/"
+  - id: ghamadi_40
+    name_en: "Saad Al-Ghamdi (40kbps)"
+    name_ar: "سعد الغامدي (40kbps)"
+    base_url: "https://everyayah.com/data/Ghamadi_40kbps/"
+  - id: hani_rifai_192
+    name_en: "Hani Rifai (192kbps)"
+    name_ar: "هاني الرفاعي (192kbps)"
+    base_url: "https://everyayah.com/data/Hani_Rifai_192kbps/"
+  - id: hani_rifai_64
+    name_en: "Hani Rifai (64kbps)"
+    name_ar: "هاني الرفاعي (64kbps)"
+    base_url: "https://everyayah.com/data/Hani_Rifai_64kbps/"
+  - id: hudhaify_128
+    name_en: "Hudhaify (128kbps)"
+    name_ar: "الحذيفي (128kbps)"
+    base_url: "https://everyayah.com/data/Hudhaify_128kbps/"
+  - id: hudhaify_64
+    name_en: "Hudhaify (64kbps)"
+    name_ar: "الحذيفي (64kbps)"
+    base_url: "https://everyayah.com/data/Hudhaify_64kbps/"
+  - id: husary_128
+    name_en: "Husary (128kbps)"
+    name_ar: "الحصري (128kbps)"
+    base_url: "https://everyayah.com/data/Husary_128kbps/"
+  - id: husary_64
+    name_en: "Husary (64kbps)"
+    name_ar: "الحصري (64kbps)"
+    base_url: "https://everyayah.com/data/Husary_64kbps/"
+  - id: husary_muallim_128
+    name_en: "Husary (Muallim, 128kbps)"
+    name_ar: "الحصري (معلم، 128kbps)"
+    base_url: "https://everyayah.com/data/Husary_Muallim_128kbps/"
+  - id: husary_mujawwad_128
+    name_en: "Husary (Mujawwad, 128kbps)"
+    name_ar: "الحصري (مجود، 128kbps)"
+    base_url: "https://everyayah.com/data/Husary_128kbps_Mujawwad/"
+  - id: husary_mujawwad_64
+    name_en: "Husary (Mujawwad, 64kbps)"
+    name_ar: "الحصري (مجود، 64kbps)"
+    base_url: "https://everyayah.com/data/Husary_Mujawwad_64kbps/"
+  - id: ibrahim_akhdar_32
+    name_en: "Ibrahim Akhdar (32kbps)"
+    name_ar: "إبراهيم الأخضر (32kbps)"
+    base_url: "https://everyayah.com/data/Ibrahim_Akhdar_32kbps/"
+  - id: karim_mansoori_40
+    name_en: "Karim Mansoori (40kbps)"
+    name_ar: "كريم منصوري (40kbps)"
+    base_url: "https://everyayah.com/data/Karim_Mansoori_40kbps/"
+  - id: khalefa_tunaiji_64
+    name_en: "Khalefa Al-Tunaiji (64kbps)"
+    name_ar: "خليفة الطنيجي (64kbps)"
+    base_url: "https://everyayah.com/data/khalefa_al_tunaiji_64kbps/"
+  - id: khalid_qahtani_192
+    name_en: "Khalid Al-Qahtani (192kbps)"
+    name_ar: "خالد القحطاني (192kbps)"
+    base_url: "https://everyayah.com/data/Khaalid_Abdullaah_al-Qahtaanee_192kbps/"
+  - id: maher_128
+    name_en: "Maher Al Muaiqly (128kbps)"
+    name_ar: "ماهر المعيقلي (128kbps)"
+    base_url: "https://everyayah.com/data/MaherAlMuaiqly128kbps/"
+  - id: maher_64
+    name_en: "Maher Al Muaiqly (64kbps)"
+    name_ar: "ماهر المعيقلي (64kbps)"
+    base_url: "https://everyayah.com/data/Maher_AlMuaiqly_64kbps/"
+  - id: mahmod_albanna_32
+    name_en: "Mahmoud Ali Al-Banna (32kbps)"
+    name_ar: "محمود علي البنا (32kbps)"
+    base_url: "https://everyayah.com/data/mahmoud_ali_al_banna_32kbps/"
+  - id: menshawi_16
+    name_en: "Menshawi (16kbps)"
+    name_ar: "المنشاوي (16kbps)"
+    base_url: "https://everyayah.com/data/Menshawi_16kbps/"
+  - id: minshawy_mujawwad_192
+    name_en: "Minshawy Mujawwad (192kbps)"
+    name_ar: "المنشاوي مجود (192kbps)"
+    base_url: "https://everyayah.com/data/Minshawy_Mujawwad_192kbps/"
+  - id: minshawy_mujawwad_64
+    name_en: "Minshawy Mujawwad (64kbps)"
+    name_ar: "المنشاوي مجود (64kbps)"
+    base_url: "https://everyayah.com/data/Minshawy_Mujawwad_64kbps/"
+  - id: minshawy_murattal_128
+    name_en: "Minshawy Murattal (128kbps)"
+    name_ar: "المنشاوي مرتل (128kbps)"
+    base_url: "https://everyayah.com/data/Minshawy_Murattal_128kbps/"
+  - id: tablaway_128
+    name_en: "Mohammad Al-Tablaway (128kbps)"
+    name_ar: "محمد الطبلاوي (128kbps)"
+    base_url: "https://everyayah.com/data/Mohammad_al_Tablaway_128kbps/"
+  - id: tablaway_64
+    name_en: "Mohammad Al-Tablaway (64kbps)"
+    name_ar: "محمد الطبلاوي (64kbps)"
+    base_url: "https://everyayah.com/data/Mohammad_al_Tablaway_64kbps/"
+  - id: muhammad_abdulkareem_128
+    name_en: "Muhammad AbdulKareem (128kbps)"
+    name_ar: "محمد عبد الكريم (128kbps)"
+    base_url: "https://everyayah.com/data/Muhammad_AbdulKareem_128kbps/"
+  - id: muhammad_ayyoub_128
+    name_en: "Muhammad Ayyoub (128kbps)"
+    name_ar: "محمد أيوب (128kbps)"
+    base_url: "https://everyayah.com/data/Muhammad_Ayyoub_128kbps/"
+  - id: muhammad_ayyoub_64
+    name_en: "Muhammad Ayyoub (64kbps)"
+    name_ar: "محمد أيوب (64kbps)"
+    base_url: "https://everyayah.com/data/Muhammad_Ayyoub_64kbps/"
+  - id: muhammad_jibreel_128
+    name_en: "Muhammad Jibreel (128kbps)"
+    name_ar: "محمد جبريل (128kbps)"
+    base_url: "https://everyayah.com/data/Muhammad_Jibreel_128kbps/"
+  - id: muhammad_jibreel_64
+    name_en: "Muhammad Jibreel (64kbps)"
+    name_ar: "محمد جبريل (64kbps)"
+    base_url: "https://everyayah.com/data/Muhammad_Jibreel_64kbps/"
+  - id: muhsin_al_qasim_192
+    name_en: "Muhsin Al Qasim (192kbps)"
+    name_ar: "محسن القاسم (192kbps)"
+    base_url: "https://everyayah.com/data/Muhsin_Al_Qasim_192kbps/"
+  - id: nabil_rifai_48
+    name_en: "Nabil Rifa'i (48kbps)"
+    name_ar: "نبيل الرفاعي (48kbps)"
+    base_url: "https://everyayah.com/data/Nabil_Rifa3i_48kbps/"
+  - id: nasser_alqatami_128
+    name_en: "Nasser Alqatami (128kbps)"
+    name_ar: "ناصر القطامي (128kbps)"
+    base_url: "https://everyayah.com/data/Nasser_Alqatami_128kbps/"
+  - id: sahl_yassin_128
+    name_en: "Sahl Yassin (128kbps)"
+    name_ar: "سهل ياسين (128kbps)"
+    base_url: "https://everyayah.com/data/Sahl_Yassin_128kbps/"
+  - id: bukhatir_128
+    name_en: "Salah Bukhatir (128kbps)"
+    name_ar: "صلاح بو خاطر (128kbps)"
+    base_url: "https://everyayah.com/data/Salaah_AbdulRahman_Bukhatir_128kbps/"
+  - id: budair_128
+    name_en: "Salah Al Budair (128kbps)"
+    name_ar: "صالح البدير (128kbps)"
+    base_url: "https://everyayah.com/data/Salah_Al_Budair_128kbps/"
+  - id: shuraym_128
+    name_en: "Saud Ash-Shuraym (128kbps)"
+    name_ar: "سعود الشريم (128kbps)"
+    base_url: "https://everyayah.com/data/Saood_ash-Shuraym_128kbps/"
+  - id: shuraym_64
+    name_en: "Saud Ash-Shuraym (64kbps)"
+    name_ar: "سعود الشريم (64kbps)"
+    base_url: "https://everyayah.com/data/Saood_ash-Shuraym_64kbps/"
+  - id: yaser_salamah_128
+    name_en: "Yaser Salamah (128kbps)"
+    name_ar: "ياسر سلامة (128kbps)"
+    base_url: "https://everyayah.com/data/Yaser_Salamah_128kbps/"
+  - id: yasser_dossary_128
+    name_en: "Yasser Ad-Dussary (128kbps)"
+    name_ar: "ياسر الدوسري (128kbps)"
+    base_url: "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps/"
+  - id: english_sahih_walk_192
+    name_en: "English - Sahih International (Ibrahim Walk, 192kbps)"
+    name_ar: "إنجليزي - صحيح إنترناشونال (إبراهيم ووك، 192kbps)"
+    base_url: "https://everyayah.com/data/English/Sahih_Intnl_Ibrahim_Walk_192kbps/"
+

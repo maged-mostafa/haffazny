@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Contact - Haffazny حفظني</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <h1>Haffazny حفظني</h1>
+        <p><a href="/" class="link-back">← Back to player</a></p>
+    </header>
+
+    <main class="contact-page">
+        <h2>Contact</h2>
+        <p class="contact-intro">Send a message and we’ll get back to you.</p>
+
+        <form id="contact-form" class="contact-form">
+            <div class="field">
+                <label for="contact-name">Name</label>
+                <input type="text" id="contact-name" name="name" required minlength="1" />
+            </div>
+            <div class="field">
+                <label for="contact-email">Email</label>
+                <input type="email" id="contact-email" name="email" required />
+            </div>
+            <div class="field">
+                <label for="contact-subject">Subject</label>
+                <input type="text" id="contact-subject" name="subject" />
+            </div>
+            <div class="field">
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" rows="6" required></textarea>
+            </div>
+            <button type="submit" class="primary-btn" id="contact-send">Send</button>
+        </form>
+
+        <div id="contact-status" class="contact-status" aria-live="polite"></div>
+    </main>
+
+    <footer class="app-footer">
+        <a href="/">Home</a>
+        <span class="footer-sep">·</span>
+        <a href="/documentation">Documentation</a>
+        <span class="footer-sep">·</span>
+        <a href="/contact">Contact</a>
+    </footer>
+</div>
+<script>
+document.getElementById("contact-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const sendBtn = document.getElementById("contact-send");
+  const statusEl = document.getElementById("contact-status");
+  sendBtn.disabled = true;
+  statusEl.textContent = "Sending…";
+  statusEl.className = "contact-status";
+
+  const formData = new FormData(e.target);
+  const body = Object.fromEntries(formData.entries());
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok && data.success) {
+      statusEl.textContent = "Message sent. We’ll get back to you soon.";
+      statusEl.className = "contact-status success";
+      e.target.reset();
+    } else {
+      statusEl.textContent = data.detail || data.message || "Failed to send. Try again or use your email app.";
+      statusEl.className = "contact-status error";
+    }
+  } catch (err) {
+    statusEl.textContent = "Network error. Please try again.";
+    statusEl.className = "contact-status error";
+  }
+  sendBtn.disabled = false;
+});
+</script>
+</body>
+</html>

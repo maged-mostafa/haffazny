@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  quran-player:
+    build: .
+    container_name: quran-player
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+

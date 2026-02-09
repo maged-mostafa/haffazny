@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Haffazny حفظني</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+<div class="app">
+    <header class="app-header">
+        <div class="header-main">
+            <div>
+                <h1 data-i18n="title">Haffazny حفظني</h1>
+                <p data-i18n="subtitle">Select a reciter, surah, and ayah range, then control repetitions.</p>
+            </div>
+            <div class="language-switch">
+                <label for="language-select" data-i18n="language_label">Language</label>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <section class="controls">
+        <div class="field combobox-field">
+            <label for="reciter-search" data-i18n="reciter_label">Reciter</label>
+            <div class="combobox" id="reciter-combobox">
+                <input type="text" id="reciter-search" class="combobox-search" autocomplete="off" data-i18n-placeholder="combobox_placeholder" placeholder="Search or select..." />
+                <div class="combobox-display" id="reciter-display" tabindex="0">—</div>
+                <select id="reciter-select" class="combobox-select" aria-hidden="true" tabindex="-1">
+                    {% for r in reciters %}
+                        <option
+                            value="{{ r.id }}"
+                            data-name-en="{{ r.name_en }}"
+                            data-name-ar="{{ r.name_ar }}"
+                        >
+                            {{ r.name_en }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="combobox-list" id="reciter-list" role="listbox"></div>
+            </div>
+        </div>
+
+        <div class="field combobox-field">
+            <label for="surah-search" data-i18n="surah_label">Surah</label>
+            <div class="combobox" id="surah-combobox">
+                <input type="text" id="surah-search" class="combobox-search" autocomplete="off" data-i18n-placeholder="combobox_placeholder" placeholder="Search or select..." />
+                <div class="combobox-display" id="surah-display" tabindex="0">—</div>
+                <select id="surah-select" class="combobox-select" aria-hidden="true" tabindex="-1">
+                    {% for s in surahs %}
+                        <option
+                            value="{{ s.number }}"
+                            data-ayah-count="{{ s.ayah_count }}"
+                            data-name-en="{{ s.name_en }}"
+                            data-name-ar="{{ s.name_ar }}"
+                        >
+                            {{ "%03d"|format(s.number) }} - {{ s.name_en }} ({{ s.name_ar }})
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="combobox-list" id="surah-list" role="listbox"></div>
+            </div>
+        </div>
+
+        <div class="field field-inline">
+            <div>
+                <label for="from-ayah" data-i18n="from_ayah_label">From ayah</label>
+                <input type="number" id="from-ayah" min="1" value="1" />
+            </div>
+            <div>
+                <label for="to-ayah" data-i18n="to_ayah_label">To ayah</label>
+                <input type="number" id="to-ayah" min="1" value="7" />
+            </div>
+        </div>
+
+        <div class="field field-inline">
+            <div>
+                <label for="repeat-count" data-i18n="repeat_each_label">Repeat each ayah (0 = ∞)</label>
+                <input type="number" id="repeat-count" min="0" value="1" />
+            </div>
+            <div>
+                <label for="total-loops" data-i18n="repeat_selection_label">Repeat selection (0 = ∞)</label>
+                <input type="number" id="total-loops" min="0" value="1" />
+            </div>
+        </div>
+
+        <div class="controls-options">
+            <div class="field">
+                <label for="ayah-delay-select" data-i18n="ayah_delay_label">Ayah delay</label>
+                <select id="ayah-delay-select">
+                    <option value="0" selected>0x</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="1">1x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="speed-select" data-i18n="playback_speed_label">Playback speed</label>
+                <select id="speed-select">
+                    <option value="0">0x</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="load-btn" class="primary-btn" data-i18n="load_button">Load selection</button>
+    </section>
+
+    <section class="player-section">
+        <div class="player-controls">
+            <button id="prev-ayah-btn" data-i18n="prev_ayah_button">Prev ayah</button>
+            <button id="play-pause-btn" class="primary-btn" data-i18n="play_button">Play</button>
+            <button id="next-ayah-btn" data-i18n="next_ayah_button">Next ayah</button>
+        </div>
+        <div class="current-info">
+            <div id="current-label" data-i18n-default="no_selection">No selection loaded</div>
+            <div id="progress-text"></div>
+        </div>
+        <audio id="audio" controls class="hidden"></audio>
+    </section>
+
+    <section class="ayah-text-section">
+        <h2 data-i18n="current_ayah_heading">Current ayah</h2>
+        <div id="ayah-text-ar" class="ayah-text ayah-text-ar"></div>
+        <div id="ayah-text-en" class="ayah-text ayah-text-en"></div>
+    </section>
+
+    <section class="ayah-list-section">
+        <h2 data-i18n="ayahs_in_selection_heading">Ayahs in selection</h2>
+        <div id="ayah-list" class="ayah-list"></div>
+    </section>
+
+    <section class="playlist-section">
+        <h2 data-i18n="playlist_heading">Playlist</h2>
+        <div class="playlist-options">
+            <div class="field">
+                <label for="repeat-playlist-input" data-i18n="repeat_playlist_label">Repeat playlist (0 = ∞)</label>
+                <input type="number" id="repeat-playlist-input" min="0" value="1" />
+            </div>
+        </div>
+        <div class="playlist-actions">
+            <button id="add-selection-playlist-btn" class="secondary-btn" data-i18n="add_selection_button">Add selection</button>
+            <button id="play-selection-btn" class="secondary-btn" data-i18n="play_selection_button">Play selection</button>
+            <button id="play-playlist-btn" class="secondary-btn" data-i18n="play_playlist_button">Play playlist</button>
+            <button id="clear-playlist-btn" class="secondary-btn" data-i18n="clear_playlist_button">Clear playlist</button>
+        </div>
+        <div id="playlist-list" class="playlist-list"></div>
+    </section>
+
+    <footer class="app-footer">
+        <a href="/documentation" data-i18n="link_documentation">Documentation</a>
+        <span class="footer-sep">·</span>
+        <a href="/contact" data-i18n="link_contact">Contact</a>
+    </footer>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
+
