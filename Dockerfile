@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
 COPY src ./src
 COPY templates ./templates
 COPY static ./static
+COPY par ./par
 
 EXPOSE 8000
 
