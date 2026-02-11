@@ -94,7 +94,7 @@ def _send_contact_email(name: str, email: str, subject: str, message: str) -> No
         server.sendmail(smtp_user, to_email, msg.as_string())
 
 
-@app.get("/privacy", response_class=HTMLResponse)
+@app.get("/privacy-policy", response_class=HTMLResponse)
 async def privacy_page(request: Request):
     return templates.TemplateResponse("privacy.html", {"request": request})
 
