@@ -88,6 +88,7 @@ const translations = {
     repeat_playlist_label: "Repeat playlist (0 = ∞)",
     combobox_placeholder: "Search or select...",
     link_documentation: "Documentation",
+    link_privacy: "Privacy Policy",
     link_contact: "Contact",
   },
   ar: {
@@ -122,6 +123,7 @@ const translations = {
     repeat_playlist_label: "تكرار قائمة التشغيل (0 = ∞)",
     combobox_placeholder: "بحث أو اختر...",
     link_documentation: "التوثيق",
+    link_privacy: "سياسة الخصوصية",
     link_contact: "اتصل بنا",
   },
 };
