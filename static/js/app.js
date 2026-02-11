@@ -1,3 +1,6 @@
+const STORAGE_KEY = "haffazny_settings";
+const PLAYLIST_BLOCK_DELAY_MS = 5000; // Fixed 5s pause between playlist blocks
+
 const reciterSelect = document.getElementById("reciter-select");
 const surahSelect = document.getElementById("surah-select");
 const fromAyahInput = document.getElementById("from-ayah");
@@ -29,6 +32,7 @@ const reciterDisplay = document.getElementById("reciter-display");
 const surahDisplay = document.getElementById("surah-display");
 const reciterListEl = document.getElementById("reciter-list");
 const surahListEl = document.getElementById("surah-list");
+const resetBtn = document.getElementById("reset-btn");
 
 let currentLang = "en";
 
@@ -67,6 +71,7 @@ const translations = {
     repeat_each_label: "Repeat each ayah (0 = ∞)",
     repeat_selection_label: "Repeat selection (0 = ∞)",
     load_button: "Load selection",
+    reset_button: "Reset selection",
     prev_ayah_button: "Prev ayah",
     play_button: "Play",
     next_ayah_button: "Next ayah",
@@ -102,6 +107,7 @@ const translations = {
     repeat_each_label: "تكرار كل آية (0 = ∞)",
     repeat_selection_label: "تكرار المقطع (0 = ∞)",
     load_button: "تحميل المقطع",
+    reset_button: "إعادة التعيين",
     prev_ayah_button: "الآية السابقة",
     play_button: "تشغيل",
     next_ayah_button: "الآية التالية",
@@ -171,11 +177,131 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => { el.placeholder = ph; });
 }
 
+// --- Persist settings to localStorage ---
+function saveSettings() {
+  try {
+    const blocksToSave = playlistBlocks.map((b) => ({
+      ...b,
+      repeatEach: b.repeatEach === Infinity ? 0 : b.repeatEach,
+      repeatSelection: b.repeatSelection === Infinity ? 0 : b.repeatSelection,
+    }));
+    const data = {
+      reciterId: reciterSelect.value,
+      surah: surahSelect.value,
+      fromAyah: fromAyahInput.value,
+      toAyah: toAyahInput.value,
+      repeatCount: repeatCountInput.value,
+      totalLoops: totalLoopsInput.value,
+      ayahDelay: ayahDelaySelect.value,
+      speed: speedSelect.value,
+      repeatPlaylist: repeatPlaylistInput.value,
+      lang: langSelect.value,
+      playlistBlocks: blocksToSave,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn("Could not save settings", e);
+  }
+}
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+
+    if (data.reciterId) {
+      const idx = Array.from(reciterSelect.options).findIndex((o) => o.value === data.reciterId);
+      if (idx >= 0) {
+        reciterSelect.selectedIndex = idx;
+        reciterDisplay.textContent = reciterSelect.options[idx].textContent;
+      }
+    }
+    if (data.surah) {
+      const idx = Array.from(surahSelect.options).findIndex((o) => o.value === data.surah);
+      if (idx >= 0) {
+        surahSelect.selectedIndex = idx;
+        surahDisplay.textContent = surahSelect.options[idx].textContent;
+        surahSelect.dispatchEvent(new Event("change"));
+      }
+    }
+    if (data.fromAyah != null) fromAyahInput.value = data.fromAyah;
+    if (data.toAyah != null) toAyahInput.value = data.toAyah;
+    if (data.repeatCount != null) repeatCountInput.value = data.repeatCount;
+    if (data.totalLoops != null) totalLoopsInput.value = data.totalLoops;
+    if (data.ayahDelay != null) ayahDelaySelect.value = data.ayahDelay;
+    if (data.speed != null) speedSelect.value = data.speed;
+    if (data.repeatPlaylist != null) repeatPlaylistInput.value = data.repeatPlaylist;
+    if (data.lang) {
+      langSelect.value = data.lang;
+      currentLang = data.lang;
+    }
+
+    if (data.playlistBlocks && Array.isArray(data.playlistBlocks)) {
+      playlistBlocks = data.playlistBlocks.map((b) => ({
+        ...b,
+        repeatEach: (b.repeatEach === 0 || b.repeatEach == null) ? Infinity : b.repeatEach,
+        repeatSelection: (b.repeatSelection === 0 || b.repeatSelection == null) ? Infinity : b.repeatSelection,
+      }));
+      renderPlaylist();
+    }
+
+    ayahDelayMultiplier = parseFloat(ayahDelaySelect.value || "0") || 0;
+    playbackSpeedMultiplier = parseFloat(speedSelect.value || "1") || 1;
+
+    loadSelection();
+  } catch (e) {
+    console.warn("Could not load settings", e);
+  }
+}
+
+function resetSettings() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {}
+  reciterSelect.selectedIndex = 0;
+  surahSelect.selectedIndex = 0;
+  surahSelect.dispatchEvent(new Event("change"));
+  reciterDisplay.textContent = reciterSelect.options[0].textContent;
+  surahDisplay.textContent = surahSelect.options[0].textContent;
+
+  const maxAyah = parseInt(surahSelect.options[0].dataset.ayahCount, 10) || 7;
+  fromAyahInput.value = 1;
+  toAyahInput.value = Math.min(7, maxAyah);
+  repeatCountInput.value = 1;
+  totalLoopsInput.value = 1;
+  ayahDelaySelect.value = "0";
+  speedSelect.value = "1";
+  repeatPlaylistInput.value = "0";
+
+  selectionTracks = [];
+  currentSurahMeta = null;
+  playlistBlocks = [];
+  currentQueue = [];
+  currentQueueType = "selection";
+  currentIndex = 0;
+  currentAyahRepeat = 0;
+  currentLoop = 0;
+  isLoaded = false;
+  ayahDelayMultiplier = 0;
+  playbackSpeedMultiplier = 1;
+  audio.pause();
+  audio.src = "";
+  audio.classList.add("hidden");
+  currentLabel.textContent = translations[currentLang].no_selection;
+  progressText.textContent = "";
+  ayahTextArEl.textContent = "";
+  ayahTextEnEl.textContent = "";
+  renderAyahList();
+  renderPlaylist();
+}
+
 langSelect.addEventListener("change", () => {
   currentLang = langSelect.value;
   applyTranslations();
   renderAyahList();
   renderPlaylist();
+  saveSettings();
 });
 
 // --- Searchable combobox for Reciter and Surah ---
@@ -236,6 +362,7 @@ function refreshReciterList() {
       reciterSelect.selectedIndex = index;
       reciterDisplay.textContent = reciterSelect.options[reciterSelect.selectedIndex].textContent;
       reciterListEl.classList.remove("open");
+      saveSettings();
     });
     reciterListEl.appendChild(div);
   });
@@ -303,21 +430,25 @@ document.addEventListener("click", (e) => {
 reciterSelect.addEventListener("change", () => {
   if (reciterSelect.options[reciterSelect.selectedIndex])
     reciterDisplay.textContent = reciterSelect.options[reciterSelect.selectedIndex].textContent;
+  saveSettings();
 });
 surahSelect.addEventListener("change", () => {
   if (surahSelect.options[surahSelect.selectedIndex])
     surahDisplay.textContent = surahSelect.options[surahSelect.selectedIndex].textContent;
+  saveSettings();
 });
 
 ayahDelaySelect.addEventListener("change", () => {
   const v = parseFloat(ayahDelaySelect.value || "1");
   ayahDelayMultiplier = Number.isFinite(v) ? v : 1;
+  saveSettings();
 });
 
 speedSelect.addEventListener("change", () => {
   const v = parseFloat(speedSelect.value || "1");
   playbackSpeedMultiplier = v > 0 ? v : 1;
   audio.playbackRate = playbackSpeedMultiplier;
+  saveSettings();
 });
 
 function clampAyahInputs() {
@@ -341,8 +472,16 @@ surahSelect.addEventListener("change", () => {
   toAyahInput.value = maxAyah;
 });
 
-fromAyahInput.addEventListener("change", clampAyahInputs);
-toAyahInput.addEventListener("change", clampAyahInputs);
+function onAyahOrRepeatChange() {
+  clampAyahInputs();
+  saveSettings();
+}
+
+fromAyahInput.addEventListener("change", onAyahOrRepeatChange);
+toAyahInput.addEventListener("change", onAyahOrRepeatChange);
+repeatCountInput.addEventListener("change", saveSettings);
+totalLoopsInput.addEventListener("change", saveSettings);
+repeatPlaylistInput.addEventListener("change", saveSettings);
 
 async function loadSelection() {
   clampAyahInputs();
@@ -384,6 +523,7 @@ async function loadSelection() {
       progressText.textContent = "";
       audio.classList.add("hidden");
     }
+    saveSettings();
   } catch (err) {
     console.error(err);
     alert("Could not load audio for the selected range.");
@@ -459,7 +599,7 @@ function renderPlaylist() {
     infoBtn.textContent = `${surahName} (${fromAyah}-${toAyah}) | each ${repeatEachLabel}, all ${repeatSelLabel} | delay ${delayLabel}, speed ${speedLabel}`;
     infoBtn.addEventListener("click", () => {
       // Preview/play this block only
-      const queue = expandBlockToQueue(block);
+      const queue = expandBlockToQueue(block, 0);
       if (queue.length === 0) return;
       currentQueueType = "playlist";
       currentQueue = queue;
@@ -513,11 +653,13 @@ function movePlaylistItem(index, delta) {
   const [item] = playlistBlocks.splice(index, 1);
   playlistBlocks.splice(newIndex, 0, item);
   renderPlaylist();
+  saveSettings();
 }
 
 function removeFromPlaylist(index) {
   playlistBlocks.splice(index, 1);
   renderPlaylist();
+  saveSettings();
 }
 
 function getCurrentAyahDelay() {
@@ -553,13 +695,14 @@ function addToPlaylistAsBlock(tracks, repeatEach, repeatSelection) {
   if (!block) return;
   playlistBlocks.push(block);
   renderPlaylist();
+  saveSettings();
 }
 
 function addSingleAyahToPlaylist(item) {
   addToPlaylistAsBlock([item], 1, 1);
 }
 
-function expandBlockToQueue(block) {
+function expandBlockToQueue(block, blockIndex) {
   const queue = [];
   const repeatEach =
     block.repeatEach && block.repeatEach > 0 && block.repeatEach !== Infinity
@@ -578,6 +721,7 @@ function expandBlockToQueue(block) {
       for (let r = 0; r < repeatEach; r += 1) {
         queue.push({
           ...track,
+          blockIndex,
           ayahDelayMultiplier: blockDelay,
           playbackSpeedMultiplier: blockSpeed,
         });
@@ -590,8 +734,8 @@ function expandBlockToQueue(block) {
 
 function expandPlaylistBlocksToQueue() {
   let queue = [];
-  playlistBlocks.forEach((block) => {
-    queue = queue.concat(expandBlockToQueue(block));
+  playlistBlocks.forEach((block, blockIndex) => {
+    queue = queue.concat(expandBlockToQueue(block, blockIndex));
   });
   return queue;
 }
@@ -668,6 +812,23 @@ function goToNextAyah(manual = false) {
 
     if (currentIndex + 1 < currentQueue.length) {
       currentIndex += 1;
+      const curr = currentQueue[currentIndex];
+      const prev = currentQueue[currentIndex - 1];
+      const isNewBlock =
+        currentQueueType === "playlist" &&
+        curr &&
+        prev &&
+        curr.blockIndex != null &&
+        prev.blockIndex != null &&
+        curr.blockIndex !== prev.blockIndex;
+      if (isNewBlock) {
+        if (ayahDelayTimeout) clearTimeout(ayahDelayTimeout);
+        ayahDelayTimeout = setTimeout(() => {
+          ayahDelayTimeout = null;
+          loadCurrentAyah(true);
+        }, PLAYLIST_BLOCK_DELAY_MS);
+        return;
+      }
       loadCurrentAyah(true);
       return;
     }
@@ -689,13 +850,17 @@ function goToNextAyah(manual = false) {
       return;
     }
 
-    // When playing playlist: optionally repeat the whole playlist
+    // When playing playlist: optionally repeat the whole playlist (5s delay before restart)
     if (currentQueueType === "playlist" && (maxPlaylistLoops === Infinity || currentPlaylistLoop < maxPlaylistLoops)) {
       currentPlaylistLoop += 1;
       currentIndex = 0;
       currentAyahRepeat = 0;
       currentLoop = 0;
-      loadCurrentAyah(true);
+      if (ayahDelayTimeout) clearTimeout(ayahDelayTimeout);
+      ayahDelayTimeout = setTimeout(() => {
+        ayahDelayTimeout = null;
+        loadCurrentAyah(true);
+      }, PLAYLIST_BLOCK_DELAY_MS);
       return;
     }
 
@@ -792,7 +957,7 @@ playPlaylistBtn.addEventListener("click", () => {
   if (playlistBlocks.length === 0) return;
   const queue = expandPlaylistBlocksToQueue();
   if (queue.length === 0) return;
-  const repeatVal = parseInt(repeatPlaylistInput.value || "1", 10);
+  const repeatVal = parseInt(repeatPlaylistInput.value || "0", 10);
   maxPlaylistLoops = repeatVal === 0 ? Infinity : Math.max(1, repeatVal);
   currentPlaylistLoop = 1;
   currentQueueType = "playlist";
@@ -809,6 +974,7 @@ playPlaylistBtn.addEventListener("click", () => {
 clearPlaylistBtn.addEventListener("click", () => {
   playlistBlocks = [];
   renderPlaylist();
+  saveSettings();
 });
 
 addSelectionPlaylistBtn.addEventListener("click", () => {
@@ -826,6 +992,12 @@ addSelectionPlaylistBtn.addEventListener("click", () => {
   addToPlaylistAsBlock(selectionTracks, blockRepeatEach, blockRepeatSelection);
 });
 
-// Initial language application
+// Initial load: restore settings then apply translations
+loadSettings();
 applyTranslations();
+
+resetBtn.addEventListener("click", () => {
+  resetSettings();
+  applyTranslations();
+});
 

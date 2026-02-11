@@ -111,7 +111,11 @@
             </div>
         </div>
 
-        <button id="load-btn" class="primary-btn" data-i18n="load_button">Load selection</button>
+        <div class="controls-buttons">
+            <button id="load-btn" class="primary-btn" data-i18n="load_button">Load selection</button>
+            <button id="add-selection-playlist-btn" class="primary-btn" data-i18n="add_selection_button">Add selection</button>
+            <button id="reset-btn" class="secondary-btn" data-i18n="reset_button">Reset selection</button>
+        </div>
     </section>
 
     <section class="player-section">
@@ -143,11 +147,10 @@
         <div class="playlist-options">
             <div class="field">
                 <label for="repeat-playlist-input" data-i18n="repeat_playlist_label">Repeat playlist (0 = ∞)</label>
-                <input type="number" id="repeat-playlist-input" min="0" value="1" />
+                <input type="number" id="repeat-playlist-input" min="0" value="0" />
             </div>
         </div>
         <div class="playlist-actions">
-            <button id="add-selection-playlist-btn" class="secondary-btn" data-i18n="add_selection_button">Add selection</button>
             <button id="play-selection-btn" class="secondary-btn" data-i18n="play_selection_button">Play selection</button>
             <button id="play-playlist-btn" class="secondary-btn" data-i18n="play_playlist_button">Play playlist</button>
             <button id="clear-playlist-btn" class="secondary-btn" data-i18n="clear_playlist_button">Clear playlist</button>
