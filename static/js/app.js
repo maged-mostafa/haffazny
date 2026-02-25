@@ -78,7 +78,7 @@ const translations = {
     current_ayah_heading: "Current ayah",
     ayahs_in_selection_heading: "Ayahs in selection",
     playlist_heading: "Playlist",
-    add_selection_button: "Add selection",
+    add_selection_button: "Add selection to playlist",
     play_selection_button: "Play selection",
     play_playlist_button: "Play playlist",
     clear_playlist_button: "Clear playlist",
@@ -86,6 +86,8 @@ const translations = {
     finished_all_repeats: "Finished all repeats.",
     ayah_label: "Ayah",
     remove_from_playlist: "Remove",
+    deactivate_playlist_item: "Deactivate",
+    activate_playlist_item: "Activate",
     move_up: "Up",
     move_down: "Down",
     ayah_delay_label: "Ayah delay",
@@ -114,7 +116,7 @@ const translations = {
     current_ayah_heading: "الآية الحالية",
     ayahs_in_selection_heading: "آيات المقطع",
     playlist_heading: "قائمة التشغيل",
-    add_selection_button: "إضافة المقطع",
+    add_selection_button: "إضافة المقطع إلى قائمة التشغيل",
     play_selection_button: "تشغيل المقطع",
     play_playlist_button: "تشغيل قائمة التشغيل",
     clear_playlist_button: "مسح قائمة التشغيل",
@@ -122,6 +124,8 @@ const translations = {
     finished_all_repeats: "انتهت كل التكرارات.",
     ayah_label: "آية",
     remove_from_playlist: "إزالة",
+    deactivate_playlist_item: "تعطيل",
+    activate_playlist_item: "تفعيل",
     move_up: "أعلى",
     move_down: "أسفل",
     ayah_delay_label: "تأخير الآية",
@@ -242,6 +246,7 @@ function loadSettings() {
         ...b,
         repeatEach: (b.repeatEach === 0 || b.repeatEach == null) ? Infinity : b.repeatEach,
         repeatSelection: (b.repeatSelection === 0 || b.repeatSelection == null) ? Infinity : b.repeatSelection,
+        active: b.active !== false,
       }));
       renderPlaylist();
     }
@@ -573,8 +578,9 @@ function renderAyahList() {
 function renderPlaylist() {
   playlistListEl.innerHTML = "";
   playlistBlocks.forEach((block, index) => {
+    const isActive = block.active !== false;
     const row = document.createElement("div");
-    row.className = "playlist-item";
+    row.className = "playlist-item" + (isActive ? "" : " playlist-item-inactive");
 
     const infoBtn = document.createElement("button");
     infoBtn.className = "playlist-label";
@@ -597,7 +603,12 @@ function renderPlaylist() {
     const delayLabel = block.ayahDelay != null ? `${block.ayahDelay}x` : "1x";
     const speedLabel = block.playbackSpeed != null ? `${block.playbackSpeed}x` : "1x";
     infoBtn.textContent = `${surahName} (${fromAyah}-${toAyah}) | each ${repeatEachLabel}, all ${repeatSelLabel} | delay ${delayLabel}, speed ${speedLabel}`;
-    infoBtn.addEventListener("click", () => {
+    infoBtn.addEventListener("click", (e) => {
+      if (!isActive) {
+        e.stopPropagation();
+        togglePlaylistItemActive(index);
+        return;
+      }
       // Preview/play this block only
       const queue = expandBlockToQueue(block, 0);
       if (queue.length === 0) return;
@@ -629,6 +640,16 @@ function renderPlaylist() {
       movePlaylistItem(index, 1);
     });
 
+    const toggleActiveBtn = document.createElement("button");
+    toggleActiveBtn.textContent = isActive
+      ? translations[currentLang].deactivate_playlist_item
+      : translations[currentLang].activate_playlist_item;
+    toggleActiveBtn.className = isActive ? "" : "playlist-activate-btn";
+    toggleActiveBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      togglePlaylistItemActive(index);
+    });
+
     const removeBtn = document.createElement("button");
     removeBtn.textContent = translations[currentLang].remove_from_playlist;
     removeBtn.addEventListener("click", (e) => {
@@ -638,6 +659,7 @@ function renderPlaylist() {
 
     controls.appendChild(upBtn);
     controls.appendChild(downBtn);
+    controls.appendChild(toggleActiveBtn);
     controls.appendChild(removeBtn);
 
     row.appendChild(infoBtn);
@@ -662,6 +684,14 @@ function removeFromPlaylist(index) {
   saveSettings();
 }
 
+function togglePlaylistItemActive(index) {
+  const block = playlistBlocks[index];
+  if (!block) return;
+  block.active = block.active === false;
+  renderPlaylist();
+  saveSettings();
+}
+
 function getCurrentAyahDelay() {
   const v = parseFloat(ayahDelaySelect.value ?? "0");
   return Number.isFinite(v) ? v : 0;
@@ -681,6 +711,7 @@ function createBlockFromTracks(tracks, repeatEach, repeatSelection, ayahDelay, p
     repeatSelection,
     ayahDelay: ayahDelay != null ? ayahDelay : 1,
     playbackSpeed: playbackSpeed != null ? playbackSpeed : 1,
+    active: true,
   };
 }
 
@@ -734,8 +765,12 @@ function expandBlockToQueue(block, blockIndex) {
 
 function expandPlaylistBlocksToQueue() {
   let queue = [];
-  playlistBlocks.forEach((block, blockIndex) => {
-    queue = queue.concat(expandBlockToQueue(block, blockIndex));
+  let blockIndex = 0;
+  playlistBlocks.forEach((block) => {
+    if (block.active !== false) {
+      queue = queue.concat(expandBlockToQueue(block, blockIndex));
+      blockIndex += 1;
+    }
   });
   return queue;
 }
