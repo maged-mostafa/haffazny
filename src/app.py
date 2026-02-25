@@ -13,10 +13,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
 
-import sys
-sys.path.append(str(Path(__file__).resolve().parent))
-#from .config import RECITERS, SURAHS, get_reciter, get_surah
-from config import RECITERS, SURAHS, get_reciter, get_surah
+from .config import RECITERS, SURAHS, get_reciter, get_surah
+#import sys
+#sys.path.append(str(Path(__file__).resolve().parent))
+#from config import RECITERS, SURAHS, get_reciter, get_surah
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
