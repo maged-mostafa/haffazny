@@ -13,10 +13,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
 
-from .config import RECITERS, SURAHS, get_reciter, get_surah
-#import sys
-#sys.path.append(str(Path(__file__).resolve().parent))
-#from config import RECITERS, SURAHS, get_reciter, get_surah
+#from .config import RECITERS, SURAHS, get_reciter, get_surah
+import sys
+sys.path.append(str(Path(__file__).resolve().parent))
+from config import RECITERS, SURAHS, STATIC_VERSION, get_reciter, get_surah
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +43,7 @@ async def index(request: Request):
             "request": request,
             "reciters": RECITERS,
             "surahs": SURAHS,
+            "static_version": STATIC_VERSION,
         },
     )
 
@@ -59,7 +60,7 @@ async def documentation(request: Request):
         content_html = markdown.markdown(raw, extensions=["fenced_code", "tables"])
     return templates.TemplateResponse(
         "documentation.html",
-        {"request": request, "content": content_html},
+        {"request": request, "content": content_html, "static_version": STATIC_VERSION},
     )
 
 
@@ -98,12 +99,12 @@ def _send_contact_email(name: str, email: str, subject: str, message: str) -> No
 
 @app.get("/privacy-policy", response_class=HTMLResponse)
 async def privacy_page(request: Request):
-    return templates.TemplateResponse("privacy.html", {"request": request})
+    return templates.TemplateResponse("privacy.html", {"request": request, "static_version": STATIC_VERSION})
 
 
 @app.get("/contact", response_class=HTMLResponse)
 async def contact_page(request: Request):
-    return templates.TemplateResponse("contact.html", {"request": request})
+    return templates.TemplateResponse("contact.html", {"request": request, "static_version": STATIC_VERSION})
 
 
 @app.post("/api/contact")
@@ -152,6 +153,7 @@ async def get_ayahs(
                 "surah_name_ar": surah_meta.name_ar,
                 "ayah": ayah,
                 "audio_url": url,
+                "reciter_id": reciter.id,
             }
         )
 

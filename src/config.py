@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Any
 
 import yaml
+
+# Cache busting: changes on each app restart (e.g. deploy), so browsers fetch fresh static files
+STATIC_VERSION = str(int(time.time()))
 
 
 BASE_DIR = Path(__file__).resolve().parent

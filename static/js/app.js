@@ -1,5 +1,6 @@
 const STORAGE_KEY = "haffazny_settings";
 const PLAYLIST_BLOCK_DELAY_MS = 5000; // Fixed 5s pause between playlist blocks
+const AYAH_DELAY_DEFAULT_SEC = 2; // Default base when duration unknown (1x = 2 sec)
 
 const reciterSelect = document.getElementById("reciter-select");
 const surahSelect = document.getElementById("surah-select");
@@ -234,7 +235,7 @@ function loadSettings() {
     if (data.repeatCount != null) repeatCountInput.value = data.repeatCount;
     if (data.totalLoops != null) totalLoopsInput.value = data.totalLoops;
     if (data.ayahDelay != null) ayahDelaySelect.value = data.ayahDelay;
-    if (data.speed != null) speedSelect.value = data.speed;
+    if (data.speed != null && data.speed !== "0") speedSelect.value = data.speed;
     if (data.repeatPlaylist != null) repeatPlaylistInput.value = data.repeatPlaylist;
     if (data.lang) {
       langSelect.value = data.lang;
@@ -697,6 +698,47 @@ function getCurrentAyahDelay() {
   return Number.isFinite(v) ? v : 0;
 }
 
+function getBitrateFromItem(item) {
+  const id = item && item.reciter_id;
+  if (id) {
+    const m = String(id).match(/_(\d+)/);
+    if (m) return parseInt(m[1], 10);
+  }
+  const url = item && item.audio_url;
+  if (url) {
+    const m = String(url).match(/(\d+)kbps/i);
+    if (m) return parseInt(m[1], 10);
+  }
+  return null;
+}
+
+async function estimateDurationFromFileSize(audioUrl, bitrate) {
+  if (!bitrate || bitrate <= 0) return null;
+  try {
+    const res = await fetch(audioUrl, { method: "HEAD" });
+    const len = res.headers.get("Content-Length");
+    if (!len) return null;
+    const bytes = parseInt(len, 10);
+    if (!Number.isFinite(bytes) || bytes <= 0) return null;
+    const bitsPerSec = bitrate * 1000;
+    return (bytes * 8) / bitsPerSec;
+  } catch {
+    return null;
+  }
+}
+
+async function getAyahDurationForDelay(item) {
+  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+    return audio.duration;
+  }
+  const bitrate = getBitrateFromItem(item);
+  if (bitrate) {
+    const estimated = await estimateDurationFromFileSize(item.audio_url, bitrate);
+    if (estimated != null && estimated > 0) return estimated;
+  }
+  return AYAH_DELAY_DEFAULT_SEC;
+}
+
 function getCurrentPlaybackSpeed() {
   const v = parseFloat(speedSelect.value || "1");
   return v > 0 ? v : 1;
@@ -950,23 +992,24 @@ nextAyahBtn.addEventListener("click", () => {
   goToNextAyah(true);
 });
 
-audio.addEventListener("ended", () => {
+audio.addEventListener("ended", async () => {
   playPauseBtn.textContent = translations[currentLang].play_button;
   if (ayahDelayTimeout) {
     clearTimeout(ayahDelayTimeout);
+    ayahDelayTimeout = null;
   }
   const item = currentQueue[currentIndex];
   const delayMult = item && item.ayahDelayMultiplier != null ? item.ayahDelayMultiplier : ayahDelayMultiplier;
-  const baseDelayMs = 1000; // 1 second base
-  const delayMs = Math.max(0, delayMult * baseDelayMs);
-  if (delayMs === 0) {
+  if (delayMult === 0) {
     goToNextAyah(false);
-  } else {
-    ayahDelayTimeout = setTimeout(() => {
-      ayahDelayTimeout = null;
-      goToNextAyah(false);
-    }, delayMs);
+    return;
   }
+  const ayahDurationSec = await getAyahDurationForDelay(item);
+  const delayMs = Math.max(0, delayMult * ayahDurationSec * 1000);
+  ayahDelayTimeout = setTimeout(() => {
+    ayahDelayTimeout = null;
+    goToNextAyah(false);
+  }, delayMs);
 });
 
 audio.addEventListener("play", () => {

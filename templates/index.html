@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Haffazny حفظني</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/style.css?v={{ static_version }}" />
 	
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4PERK3PZ04"></script>
@@ -112,11 +112,12 @@
             <div class="field">
                 <label for="speed-select" data-i18n="playback_speed_label">Playback speed</label>
                 <select id="speed-select">
-                    <option value="0">0x</option>
                     <option value="0.5">0.5x</option>
                     <option value="1" selected>1x</option>
                     <option value="1.5">1.5x</option>
                     <option value="2">2x</option>
+                    <option value="2.5">2.5x</option>
+                    <option value="3">3x</option>
                 </select>
             </div>
         </div>
@@ -177,7 +178,7 @@
     </footer>
 </div>
 
-<script src="/static/js/app.js"></script>
+<script src="/static/js/app.js?v={{ static_version }}"></script>
 </body>
 </html>
 
