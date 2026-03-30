@@ -73,28 +73,54 @@ class ContactBody(BaseModel):
 
 
 def _send_contact_email(name: str, email: str, subject: str, message: str) -> None:
-    to_email = os.environ.get("CONTACT_TO_EMAIL")
+    # 👉 Get email settings from environment
+    smtp_user = os.environ.get("Haffazny_Email")  # os.environ.get("SMTP_USER")
+    smtp_password = os.environ.get("Haffazny_Password")  # os.environ.get("SMTP_PASSWORD")
+    to_email = os.environ.get("CONTACT_TO_EMAIL", smtp_user)#os.environ.get("CONTACT_TO_EMAIL")
+
+    if not smtp_user or not smtp_password:
+        raise ValueError("Haffazny_Email and Haffazny_Password must be set")
+
     if not to_email:
         raise ValueError("CONTACT_TO_EMAIL is not set")
-    smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = int(os.environ.get("SMTP_PORT", "587"))
-    smtp_user = os.environ.get("SMTP_USER")
-    smtp_password = os.environ.get("SMTP_PASSWORD")
-    if not smtp_user or not smtp_password:
-        raise ValueError("SMTP_USER and SMTP_PASSWORD must be set")
 
+        # 👉 Email subject
+    subject = f"[Haffazny] {subject or 'Contact form'}"
+
+    # 👉 Email body (UTF-8 safe)
+    body = f"""Hello,
+
+    You received a new message from your website:
+
+    Name: {name}
+    Email: {email}
+    Subject: {subject}
+
+    Message:
+    {message}
+    """
+
+    # ✅ Use UTF-8 (important for Arabic / emoji)
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"[Haffazny] {subject or 'Contact form'}"
     msg["From"] = smtp_user
     msg["To"] = to_email
 
-    text = f"From: {name} <{email}>\n\nSubject: {subject or '(none)'}\n\n{message}"
-    msg.attach(MIMEText(text, "plain"))
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["Subject"] = subject
+    msg["From"] = smtp_user
+    msg["To"] = to_email
+    msg["Reply-To"] = email  # 👈 so you can reply directly
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
         server.login(smtp_user, smtp_password)
-        server.sendmail(smtp_user, to_email, msg.as_string())
+        server.send_message(msg)
+        server.quit()
+
+    except Exception as e:
+        raise RuntimeError(f"Email sending failed: {e}")
 
 
 @app.get("/privacy-policy", response_class=HTMLResponse)

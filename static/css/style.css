@@ -51,6 +51,12 @@ body {
   min-width: 120px;
 }
 
+@media (max-width: 767px) {
+  .language-switch {
+    display: none;
+  }
+}
+
 .controls {
   display: grid;
   gap: 16px;
